@@ -7,5 +7,7 @@ from . import views
 # not sure what the r means but it works in stopping all urls matching the empty one
 urlpatterns = [
     url('about.html', views.about, name="about"),
+    url('add_stock.html', views.add_stock, name="stock"),
     url(r'^$', views.home, name="home"),
+    
 ]

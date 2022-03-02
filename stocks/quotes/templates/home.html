@@ -1,14 +1,22 @@
 {% extends 'base.html' %} {% block content %}
-<h1>hello world!</h1>
 
+
+{% if ticker %}
+    {{ ticker }}
+{% endif %}
 <!-- python is an OOP language, so get companyName field from returned API -->
 {% if api %}
     {% if api == "Error..."%} 
         There was a problem with your ticker symbol, please try again 
     {% else %} 
-        {% for key, value in api.items %} 
-            {{ key }}:{{ value }}<br />
-        {% endfor %}
+
+        {{ api.companyName }}
+        Price: ${{ api.latestPrice }}
+        Previous Close: {{ api.previousClose }}
+        {{ api.marketCap }}
+        {{ api.ytdChange }}
+        {{ api.week52High }}
+        {{ api.week52Low }}
     {% endif %}
 
 {% endif %}

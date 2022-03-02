@@ -16,15 +16,23 @@ def home(request):
     import requests
     import json
 
-    # get data from API
-    api_request = requests.get('https://cloud.iexapis.com/stable/stock/aapl/quote?token=pk_2d0972b3fb5d4998962a399a402b6291')
-    # do error checking for the data we got from the API
-    try: 
-        api = json.loads(api_request.content)
-    except Exception as e:
-        api = "Error..."
+    if request.method == 'POST':
+        ticker = request.POST['ticker']
 
-    return render(request, 'home.html', {'api': api});
+        # get data from API
+        api_request = requests.get('https://cloud.iexapis.com/stable/stock/' +ticker+ '/quote?token=pk_2d0972b3fb5d4998962a399a402b6291')
+        # do error checking for the data we got from the API
+
+        try: 
+            api = json.loads(api_request.content)
+        except Exception as e:
+            api = "Error..."
+
+        return render(request, 'home.html', {'api': api })
+
+    else:
+        return render(request, 'home.html', {'ticker': "Enter a ticker symbol"});
+
 
 def about(request):
     return render(request, 'about.html', {})
