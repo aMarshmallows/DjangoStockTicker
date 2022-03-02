@@ -1,2 +1,2 @@
 # DjangoBlog
-Making a test blog using Django to learn about it
+Making a stock ticker web app to learn about django
