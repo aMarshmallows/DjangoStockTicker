@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block content %}
+<h1>hello world!</h1>
+
+<!-- python is an OOP language, so get companyName field from returned API -->
+{% if api %}
+    {% if api == "Error..."%} 
+        There was a problem with your ticker symbol, please try again 
+    {% else %} 
+        {% for key, value in api.items %} 
+            {{ key }}:{{ value }}<br />
+        {% endfor %}
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}
