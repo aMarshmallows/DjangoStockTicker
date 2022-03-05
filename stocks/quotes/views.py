@@ -3,7 +3,10 @@
 # like the brains behind the scenes
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import Stock
+from django.contrib import messages
+from .forms import StockForm
 
 
 # Create your views here.
@@ -36,3 +39,28 @@ def home(request):
 
 def about(request):
     return render(request, 'about.html', {})
+
+
+def add_stock(request):
+
+    # if somebody filled out this form and clicked the button, do this stuff
+    if request.method == 'POST':
+        # created a form variable and set it to StockForm after passing in the POSTed stuff or nothing
+        form = StockForm(request.POST or None)
+
+        # if it's valid, then we save it to the database and send success message and redirect to homepage
+        if form.is_valid():
+            form.save()
+            messages.success(request, ("Stock has been added"))
+            return redirect("add_stock")
+    # otherwise, spit out the stuff that was stored onto the screen like we had been doing
+    else:
+        ticker = Stock.objects.all()
+        return render(request, 'add_stock.html', {'ticker' : ticker})
+
+def delete(request, stock_id):
+    # access the database Stock and get the item with a 'primary key' or ID equal to the passed in stock_id
+    item = Stock.objects.get(pk=stock_id)
+    item.delete()
+    messages.success(request, ("Successfully deleted stock"))
+    return redirect("add_stock")

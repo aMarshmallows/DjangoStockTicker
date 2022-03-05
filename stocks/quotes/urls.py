@@ -7,7 +7,10 @@ from . import views
 # not sure what the r means but it works in stopping all urls matching the empty one
 urlpatterns = [
     url('about.html', views.about, name="about"),
-    url('add_stock.html', views.add_stock, name="stock"),
+    url('add_stock.html', views.add_stock, name="add_stock"),
+    # don't want delete.html - want to pass in stock id
+    # not sure why (?P<stock_id>.*) works for allowing this url to take in data 
+    # (simply using <stock_id> did not work) but it does!
+    url('delete/(?P<stock_id>.*)', views.delete, name="delete"),
     url(r'^$', views.home, name="home"),
-    
 ]

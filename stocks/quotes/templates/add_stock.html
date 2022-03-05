@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>stonksss!</h1>
+
+<form action="{% url 'add_stock' %}" class="d-flex" method="POST">
+    {% csrf_token %}
+    <input
+      class="form-control me-2"
+      type="search"
+      name = "ticker"
+      placeholder="Add to portfolio"
+      aria-label="Search"
+    />
+    <button class="btn btn-outline-secondary" type="submit">
+      Add Stock
+    </button>
+  </form>
+  <br/>
+
+{% for item in ticker %}
+    {{ item }} - 
+    <!-- a is an anchor with a link that passes in this item's id to the delete function -->
+    <a href="{% url "delete" item.id %}" >Delete Stock</a>
+{% endfor %}
+
+{% endblock %}

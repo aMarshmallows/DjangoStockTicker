@@ -36,22 +36,12 @@
               <a class="nav-link" href=" {% url 'about' %} ">About</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href=" {% url 'add_stock' %} ">Add Stock</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="#">Blog</a>
             </li>
           </ul>
-          <form action="{% url 'home' %}" class="d-flex" method="POST">
-            {% csrf_token %}
-            <input
-              class="form-control me-2"
-              type="search"
-              name = "ticker"
-              placeholder="Get stock quote"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-secondary" type="submit">
-              Stock Quote
-            </button>
-          </form>
         </div>
       </div>
     </nav>
