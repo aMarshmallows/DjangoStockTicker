@@ -12,5 +12,6 @@ urlpatterns = [
     # not sure why (?P<stock_id>.*) works for allowing this url to take in data 
     # (simply using <stock_id> did not work) but it does!
     url('delete/(?P<stock_id>.*)', views.delete, name="delete"),
+    url('delete_stock', views.delete_stock, name="delete_stock"),
     url(r'^$', views.home, name="home"),
 ]
