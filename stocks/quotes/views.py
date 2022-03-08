@@ -36,11 +36,7 @@ def home(request):
         return render(request, 'home.html', {'api': api })
     # otherwise, just load the home page
     else:
-        return render(request, 'home.html', {'ticker': "Enter a ticker symbol"});
-
-
-def about(request):
-    return render(request, 'about.html', {})
+        return render(request, 'home.html', {'ticker': "Enter a ticker symbol above to get started!"});
 
 
 def add_stock(request):
@@ -71,11 +67,9 @@ def add_stock(request):
             except Exception as e:
                 messages.success(request, ("Stock " + str(t)+" could not be added or is not a valid ticker"))
                 Stock.objects.filter(id=t.id).delete()
+                ticker.filter(id=t.id).delete()
                 flag = True
         
-        # if there was an invalid ticker, get objects from Stock without including the deleted value
-        if flag == True:
-            ticker = Stock.objects.all()
         # otherwise if all were valid, print success message to screen
         if flag == False:
             messages.success(request, ("Successfully added stock"))
