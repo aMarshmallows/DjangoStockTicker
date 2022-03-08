@@ -52,11 +52,37 @@ def add_stock(request):
         # created a form variable and set it to StockForm after passing in the POSTed stuff or nothing
         form = StockForm(request.POST or None)
 
-        # if it's valid, then we save it to the database and send success message and redirect to homepage
+        # if it's valid, then we save it to the database
         if form.is_valid():
             form.save()
-            messages.success(request, ("Stock has been added"))
-            return redirect("add_stock")
+        
+        # now loop through ticker and if there is an element that is not a real stock, send error message, delete it
+        # this is a very inefficient way of doing this but I am still new to Django and don't know a better way
+        ticker = Stock.objects.all()
+        output = []
+        flag = False
+
+        for t in ticker:
+            api_request = requests.get('https://cloud.iexapis.com/stable/stock/' +str(t)+ '/quote?token=pk_2d0972b3fb5d4998962a399a402b6291')
+            
+            try: 
+                api = json.loads(api_request.content)
+                output.append(api)
+            except Exception as e:
+                messages.success(request, ("Stock " + str(t)+" could not be added or is not a valid ticker"))
+                Stock.objects.filter(id=t.id).delete()
+                flag = True
+        
+        # if there was an invalid ticker, get objects from Stock without including the deleted value
+        if flag == True:
+            ticker = Stock.objects.all()
+        # otherwise if all were valid, print success message to screen
+        if flag == False:
+            messages.success(request, ("Successfully added stock"))
+            
+        return render(request, 'add_stock.html', {'ticker' : ticker, 'output' : output})
+
+        
     # otherwise, spit out the stuff that was stored onto the screen like we had been doing
     else:
         ticker = Stock.objects.all()
@@ -70,20 +96,22 @@ def add_stock(request):
             # do error checking for the data we got from the API
             try: 
                 api = json.loads(api_request.content)
+                # save all calls to python list
+                output.append(api)
             except Exception as e:
-                api = "Error..."
+                messages.success(request, ("Stock " + str(t)+" could not be added"))
             
-            # save all calls to python list
-            output.append(api)
-
-
+            
         return render(request, 'add_stock.html', {'ticker' : ticker, 'output' : output})
 
 def delete(request, stock_id):
     # access the database Stock and get the item with a 'primary key' or ID equal to the passed in stock_id
-    item = Stock.objects.get(pk=stock_id)
-    item.delete()
-    messages.success(request, ("Successfully deleted stock"))
+    try:
+        item = Stock.objects.get(pk=stock_id)
+        item.delete()
+        messages.success(request, ("Successfully deleted stock"))
+    except Exception as e:
+       messages.success(request, ("Could not delete stock")) 
     return redirect("add_stock")
 
 def delete_stock(request):
