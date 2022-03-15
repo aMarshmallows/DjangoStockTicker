@@ -22,9 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'zx2!%pkjc1*p!^d%1zgy$7qx*^(vl0w=(&-vn=thhhrpxa4%u)'
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'zx2!%pkjc1*p!^d%1zgy$7qx*^(vl0w=(&-vn=thhhrpxa4%u)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = ['ashdjangostock.herokuapp.com', '127.0.0.1']
 
@@ -123,3 +126,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+# Heroku: Update database configuration from $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
